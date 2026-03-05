@@ -1,5 +1,24 @@
 pipeline {
     agent any
+    
+    parameters {
+        string(name: 'KULLANICI_ADI', defaultValue: 'Muhammed', description: 'Gelistirici ismi')
+    }
+
+    stages {
+        stage('Selamlama') {
+            steps {
+                echo "Merhaba ${params.KULLANICI_ADI}! Atomik gelisim devam ediyor."
+            }
+        }
+        stage('Sistem Kontrolü') {
+            steps {
+                sh 'uptime'
+            }
+        }
+    }
+}pipeline {
+    agent any
 
     stages {
         stage('Atomik Kontrol') {
