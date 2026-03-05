@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Kod Kontrol') {
             steps {
-                echo 'GitHub\'dan Python dosyasi kontrol ediliyor...'
+                echo 'GitHub\'dan Python dosyasi kontrol ediliyorr...'
                 sh 'ls -l'
             }
         }
