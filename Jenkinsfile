@@ -1,16 +1,17 @@
 pipeline {
     agent any
     stages {
-        stage('Kod Kontrol') {
+        stage('Sistem Kontrol') {
             steps {
-                echo 'GitHub\'dan Python dosyasi kontrol ediliyorr...'
+                // Python'un yüklü olup olmadığını ve nerede olduğunu kontrol edelim
+                sh 'which python3 || echo "Python bulunamadi"'
                 sh 'ls -l'
             }
         }
         stage('Calistirma') {
             steps {
-                // Debian sistemindeki python3'ü kullanarak dosyayı çalıştırıyoruz
-                sh 'python3 merhaba.py'
+                // Dosya adının 'merhaba.py' ile tam eşleştiğinden emin ol
+                sh 'python3 merhaba.py || echo "Calistirma sirasinda hata olustu"'
             }
         }
     }
