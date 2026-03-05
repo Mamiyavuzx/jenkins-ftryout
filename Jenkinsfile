@@ -1,9 +1,16 @@
 pipeline {
     agent any
     stages {
-        stage('Test') {
+        stage('Kod Kontrol') {
             steps {
-                echo 'Hata ayiklama basarili!'
+                echo 'GitHub\'dan Python dosyasi kontrol ediliyor...'
+                sh 'ls -l'
+            }
+        }
+        stage('Calistirma') {
+            steps {
+                // Debian sistemindeki python3'ü kullanarak dosyayı çalıştırıyoruz
+                sh 'python3 merhaba.py'
             }
         }
     }
