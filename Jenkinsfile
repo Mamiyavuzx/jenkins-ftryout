@@ -1,23 +1,33 @@
 pipeline {
     agent any
+    
+    environment {
+        // Docker Hub kullanıcı adını buraya yaz
+        DOCKER_USER = 'senin_kullanici_adin'
+        IMAGE_NAME = 'mami-proje-w'
+    }
+
     stages {
-        stage('Test') {
+        stage('Test ve Kontrol') {
             steps {
-                echo 'Kalite kontrol yapiliyor...'
+                echo 'Kod doğrulaniyor...'
                 sh 'python3 merhaba.py'
             }
         }
-        stage('Docker Paketleme (Build Image)') {
+        stage('Docker Paketleme') {
             steps {
-                echo 'Yazilim paketleniyor...'
-                // 'proje-w' adında bir imaj oluşturuyoruz
-                sh 'docker build -t mami-proje-w:latest .'
+                echo 'Imaj olusturuluyor...'
+                sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER} ."
+                sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:latest ."
             }
         }
-        stage('Paketi Kontrol Et') {
+        stage('Docker Hub\'a Gönder (Push)') {
             steps {
-                echo 'Olusturulan paketler listeleniyor...'
-                sh 'docker images | grep mami-proje-w'
+                echo 'Imaj kütüphaneye gönderiliyor...'
+                // NOT: Burada Jenkins Credentials kullanarak login olman gerekecek
+                sh "docker login -u ${DOCKER_USER} -p 'SENIN_DOCKER_TOKEN_VEYA_SIFREN'"
+                sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:latest"
             }
         }
     }
