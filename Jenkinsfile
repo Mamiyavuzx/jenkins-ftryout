@@ -1,28 +1,24 @@
 pipeline {
     agent any
     stages {
-        stage('Derleme ve Kontrol') {
+        stage('Test') {
             steps {
-                echo 'Dosyalar kontrol ediliyor...'
-                sh 'ls -l'
-            }
-        }
-        stage('Unit Test (Birim Deneyi)') {
-            steps {
-                echo 'Matematiksel tutarlilik testi baslatiliyor...'
-                // Python kodunu calistiriyoruz, eger exit(1) dönerse Jenkins bu stage'i durdurur
+                echo 'Kalite kontrol yapiliyor...'
                 sh 'python3 merhaba.py'
             }
         }
-        stage('Yayinlama (Deployment)') {
+        stage('Docker Paketleme (Build Image)') {
             steps {
-                echo 'Test basarili! Yazilim dunyaya sunulmaya hazir.'
+                echo 'Yazilim paketleniyor...'
+                // 'proje-w' adında bir imaj oluşturuyoruz
+                sh 'docker build -t mami-proje-w:latest .'
             }
         }
-    }
-    post {
-        failure {
-            echo 'KRITIK HATA: Matematiksel tutarlilik saglanamadi! Zincir kirildi.'
+        stage('Paketi Kontrol Et') {
+            steps {
+                echo 'Olusturulan paketler listeleniyor...'
+                sh 'docker images | grep mami-proje-w'
+            }
         }
     }
 }
