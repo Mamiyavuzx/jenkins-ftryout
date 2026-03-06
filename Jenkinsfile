@@ -1,18 +1,28 @@
 pipeline {
     agent any
     stages {
-        stage('Sistem Kontrol') {
+        stage('Derleme ve Kontrol') {
             steps {
-                // Python'un yüklü olup olmadığını ve nerede olduğunu kontrol edelim
-                sh 'which python3 || echo "Python bulunamadi"'
+                echo 'Dosyalar kontrol ediliyor...'
                 sh 'ls -l'
             }
         }
-        stage('Calistirma') {
+        stage('Unit Test (Birim Deneyi)') {
             steps {
-                // Dosya adının 'merhaba.py' ile tam eşleştiğinden emin ol
-                sh 'python3 merhaba.py || echo "Calistirma sirasinda hata olustu"'
+                echo 'Matematiksel tutarlilik testi baslatiliyor...'
+                // Python kodunu calistiriyoruz, eger exit(1) dönerse Jenkins bu stage'i durdurur
+                sh 'python3 merhaba.py'
             }
+        }
+        stage('Yayinlama (Deployment)') {
+            steps {
+                echo 'Test basarili! Yazilim dunyaya sunulmaya hazir.'
+            }
+        }
+    }
+    post {
+        failure {
+            echo 'KRITIK HATA: Matematiksel tutarlilik saglanamadi! Zincir kirildi.'
         }
     }
 }
